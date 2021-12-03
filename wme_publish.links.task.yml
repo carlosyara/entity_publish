@@ -1,0 +1,3 @@
+wme_publish.local_tasks:
+  deriver: 'Drupal\wme_publish\Plugin\Derivative\WmePublishLocalTasks'
+  weight: 100

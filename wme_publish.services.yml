@@ -1,0 +1,24 @@
+services:
+  wme_publish.config_manager:
+    class: Drupal\wme_publish\WmePublishConfigManager
+    arguments: ['@config.factory']
+  wme_publish.publish_routes:
+    class: Drupal\wme_publish\Routing\WmePublishRoutes
+    arguments: ['@wme_publish.config_manager']
+  logger.channel.wme_publish:
+    parent: logger.channel_base
+    arguments: ['wme_publish']
+  wme_publish.access:
+    class: Drupal\wme_publish\PublishAccess
+    arguments: ['@wme_publish.config_manager', '@current_route_match', '@module_handler', '@wme_publish.entity_status']
+  wme_publish.entity_status:
+    class: Drupal\wme_publish\EntityStatus
+  logger.channel.wme_publish:
+    parent: logger.channel_base
+    arguments: ['wme_publish']
+  wme_publish.title:
+    class: Drupal\wme_publish\PublishTitle
+    arguments: ['@current_route_match', '@entity_type.bundle.info']
+  wme_publish.entity_publisher:
+    class: Drupal\wme_publish\EntityPublisher
+    arguments: ['@wme_publish.entity_status', '@module_handler', '@cache_tags.invalidator']

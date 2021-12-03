@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * @file
+ * Contains wme_publish.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\entity\EntityInterface;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_help().
+ */
+function wme_publish_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the wme_publish module.
+    case 'help.page.wme_publish':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Publish and Unpublish entities') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_entity_operation().
+ */
+function wme_publish_entity_operation_alter(array &$operations, EntityInterface $entity) {
+
+  $publishAcess = \Drupal::service('wme_publish.access');
+  foreach (['publish', 'unpublish'] as $operation) {
+    $entityTypeId = $entity->getEntityTypeId();
+    $entityId = $entity->id();
+    if ($publishAcess->validateEntityAccess($entity, $operation)) {
+      $publishUrl = Url::fromRoute("wme_entity.$entityTypeId.$operation", [$entityTypeId => $entityId]);
+      $operations[$operation . '_operation'] = [
+        'title' => t(ucwords($operation)),
+        'weight' => 20,
+        'url' => $publishUrl,
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function hook_entity_insert($entity) {
+  $entity_type = $entity->getEntityTypeId();
+  $wmePublishConfigManager = \Drupal::service('wme_publish.config_manager');
+  $entity_types = $wmePublishConfigManager->getEntityTypes();
+  if (!in_array($entity_type, $entity_types)) {
+    return;
+  }
+  $bundle = $entity->bundle();
+  $bundles_enabled = $wmePublishConfigManager->getEnableBundles($entity_type);
+  if (!in_array($bundle, $bundles_enabled)) {
+    return;
+  }
+  $wmePublishConfigManager = \Drupal::service('wme_publish.entity_status');
+  $entityStatus->setEntityStatus($entity, FALSE);
+}

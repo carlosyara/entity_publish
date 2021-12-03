@@ -1,0 +1,5 @@
+name: 'wme_publish'
+type: module
+description: 'Publish and Unpublish entities'
+core: 8.x
+package: 'Custom'

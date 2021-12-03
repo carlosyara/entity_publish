@@ -1,0 +1,6 @@
+wme_publish.config_form:
+  title: 'Publish / Unpublish configuration'
+  route_name: wme_publish.config_form
+  description: 'Publish / Unpublish configuration'
+  parent: system.admin_config_content
+  weight: 99

@@ -1,0 +1,13 @@
+wme_publish.config_form:
+  path: '/admin/config/wme_publish/config'
+  defaults:
+    _form: '\Drupal\wme_publish\Form\ConfigForm'
+    _title: 'Publish/Unpublish entities Configuration'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+
+route_callbacks:
+ - 'wme_publish.publish_routes:routes'
+
